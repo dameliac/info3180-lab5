@@ -10,4 +10,4 @@ class Movie(db.Model):
     title = db.Column(db.String(555), unique=True)
     description = db.Column(db.Text, nullable=True)
     poster = db.Column(db.String(255), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.timezone.utc, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
