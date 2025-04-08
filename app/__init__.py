@@ -7,6 +7,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:mysql@localhost/lab5'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+#exercise 3
 UPLOAD_FOLDER = './app/static/uploads'
 
 db = SQLAlchemy(app)
