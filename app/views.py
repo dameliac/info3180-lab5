@@ -5,8 +5,12 @@ Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
 This file creates your application.
 """
 
-from app import app
+from app import app, db
 from flask import render_template, request, jsonify, send_file
+from .models import Movies
+from .forms import MovieForm
+from datetime import datetime
+from werkzeug.utils import secure_filename
 import os
 
 
@@ -61,3 +65,27 @@ def add_header(response):
 def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
+
+#Exercise 3
+@app.route('/api/v1/movies', methods = ['POST'])
+def movies():
+    movie_form = MovieForm()
+    if movie_form.validate_on_submit():
+        title = movie_form.title.data
+        description = movie_form.description.data
+        poster = movie_form.poster.data
+        
+        movie= Movies(title,description,poster,datetime.now())
+
+        db.session.add(movie)
+        db.session.commit()
+
+        filename = secure_filename(poster.filename)
+        poster.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        response= {'message':'Movie successfully added', 'title':title, 'poster':poster, 'description':description }
+
+        return jsonify(response)
+    
+    err_msg = {'errors':[form_errors()]}
+    return jsonify(err_msg)
