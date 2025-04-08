@@ -5,6 +5,8 @@ from .config import Config
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres@PostgreSQL 17/postgres'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
