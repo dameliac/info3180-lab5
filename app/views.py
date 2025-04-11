@@ -11,8 +11,11 @@ from .models import Movies
 from .forms import MovieForm
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from flask import session
+from flask_wtf.csrf import generate_csrf
+from flask import Response
 import os
-
+import json
 
 ###
 # Routing for your application.
@@ -74,18 +77,34 @@ def movies():
         title = movie_form.title.data
         description = movie_form.description.data
         poster = movie_form.poster.data
-        
-        movie= Movies(title,description,poster,datetime.now())
+
+        #save photo securely
+        filename = secure_filename(poster.filename)
+        poster.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        #save movie to the database
+        movie= Movies(title,description,filename)
 
         db.session.add(movie)
         db.session.commit()
 
-        filename = secure_filename(poster.filename)
-        poster.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-
-        response= {'message':'Movie successfully added', 'title':title, 'poster':poster, 'description':description }
-
-        return jsonify(response)
+       
+        response= {'message':'Movie successfully added', 'title':title, 'poster':filename, 'description':description }
+        return Response(json.dumps(response), status=201, mimetype='application/json'), 201
     
-    err_msg = {'errors':[form_errors(movie_form)]}
-    return jsonify(err_msg)
+    err_msg = {'errors':form_errors(movie_form)}
+    return jsonify(err_msg), 400
+
+#Exercise 4
+@app.route('/api/v1/csrf-token', methods=['GET'])
+def get_csrf():
+    try:
+        print("Generating CSRF token...")
+        token = generate_csrf()
+        print("Token generated:", token)
+        return jsonify({'csrf_token': token})
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        return jsonify({'error': str(e)}), 500
+    #return jsonify({'csrf_token': generate_csrf()})
