@@ -74,3 +74,23 @@ onMounted(()=>{
 });
 
 </script>
+
+<style scoped>
+div{
+    margin-left: 15px;
+    margin-bottom: 30px;
+}
+
+button{
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin-left: 15px;
+    background-color: cornflowerblue;
+    color: white;
+}
+
+input, textarea{
+    width: 1000px;
+}
+</style>

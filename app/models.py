@@ -17,6 +17,7 @@ class Movies(db.Model):
 
     def serialize(self):
         return{
+            "id": self.id,
             "title":self.title,
             "description": self.description,
             "poster": self.poster,
