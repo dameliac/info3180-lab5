@@ -87,5 +87,5 @@ def movies():
 
         return jsonify(response)
     
-    err_msg = {'errors':[form_errors()]}
+    err_msg = {'errors':[form_errors(movie_form)]}
     return jsonify(err_msg)
