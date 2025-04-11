@@ -1,6 +1,17 @@
 <template>
     <!--Exercise 4-->
     <form @submit.prevent="saveMovie" id="movieForm">
+       <!-- Success Message -->
+        <div v-if="successMessage" class="alert alert-success">
+        {{ successMessage }}
+        </div>
+        <!-- Error Messages -->
+        <div v-if="errorMessages.length" class="alert alert-danger">
+        <ul>
+            <li v-for="(error, index) in errorMessages" :key="index">{{ error }}</li>
+        </ul>
+        </div>
+
         <div>
             <label for="title" class="form-label">Movie Title</label>
             <input type="text" name="title" class="form-control"/>
@@ -22,6 +33,8 @@
 
 import { ref, onMounted } from "vue";
 let csrf_token = ref("");
+const successMessage = ref('');
+const errorMessages = ref([]);
 
 function saveMovie(){
     const movieForm = document.getElementById('movieForm');
@@ -34,8 +47,17 @@ function saveMovie(){
     .then((data) =>{
         //display a success
         console.log('Movie added: ', data)
+        // Check if the response has a success message
+        if (data.message) {
+        successMessage.value = data.message;
+      }
+      if (data.errors) {
+        errorMessages.value = data.errors;
+      }
     })
-    .catch((error)=>console.log(error));
+    .catch((error)=>{
+        errorMessages.value = ['An unexpected error occurred. Please try again.'];
+        console.log(error)});
 };
 
 function getCsrfToken() {

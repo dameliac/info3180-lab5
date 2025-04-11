@@ -98,13 +98,4 @@ def movies():
 #Exercise 4
 @app.route('/api/v1/csrf-token', methods=['GET'])
 def get_csrf():
-    try:
-        print("Generating CSRF token...")
-        token = generate_csrf()
-        print("Token generated:", token)
-        return jsonify({'csrf_token': token})
-    except Exception as e:
-        import traceback
-        print(traceback.format_exc())
-        return jsonify({'error': str(e)}), 500
-    #return jsonify({'csrf_token': generate_csrf()})
+    return jsonify({'csrf_token': generate_csrf()})
